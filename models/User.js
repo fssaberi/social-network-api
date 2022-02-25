@@ -4,27 +4,40 @@ const UserSchema = new Schema(
     {
         username: {
             type: String,
-            // unique
-            // required
-            // trimmed
+            unique: true,
+            required: true,
+            trim: true
         },
         email: {
             type: String,
-            // required
-            // unique
+            required: true,
+            unique: true,
+            // validate: 
             // must match a valid address
         },
-        thoughts: {
-            // array of _id values referencing the thought model
+        thoughts: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Thought'
+            }
+        ],
+        friends: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ]
+    },
+    {
+        toJSON: {
+            virtuals: true
         },
-        friends: {
-            // array of _id values referencing hte User model(self-reference)
-        }
+        id: false
     }
 )
 
 UserSchema.virtual('friendCount').get(function() {
-    return 
+    return this.friends.length
 })
 
 const User = model('User', UserSchema);
